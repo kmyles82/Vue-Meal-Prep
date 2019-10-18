@@ -33,11 +33,11 @@
             >
             <v-spacer class="hidden-sm-and-down"></v-spacer>
 
-            <v-btn text class="hidden-sm-and-down" to="/signin">SIGN IN</v-btn>
-
-            <v-btn color="brown lighten-3" class="hidden-sm-and-down" to="/join"
-                >JOIN</v-btn
-            >
+            <div class="hidden-sm-and-down" v-if="!isAuthenticated">
+                <v-btn text  to="/signin">SIGN IN</v-btn>
+                <v-btn color="brown lighten-3"  to="/join">JOIN</v-btn>
+            </div>
+            <v-btn outlined color="white" v-else @click="logout">Logout</v-btn>
         </v-app-bar>
     </span>
 </template>
@@ -54,7 +54,17 @@ export default {
             { title: 'Sign In' },
             { title: 'Join' }
         ]
-    })
+    }),
+    methods:{
+        logout(){
+            this.$store.dispatch('userSignOut')
+        }
+    },
+    computed: {
+        isAuthenticated(){
+            return this.$store.getters.isAuthenticated
+        }
+    }
 };
 </script>
 
