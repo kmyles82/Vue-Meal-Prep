@@ -4,7 +4,6 @@ import axios from 'axios';
 import firebase from 'firebase';
 import router from '@/router';
 
-// Vue.use(router);
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -12,7 +11,8 @@ export default new Vuex.Store({
         recipes: [],
         apiUrl: 'https://api.edamam.com/search',
         user: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        userRecipes: []
     },
     mutations: {
         setRecipes(state, payload) {
@@ -23,16 +23,19 @@ export default new Vuex.Store({
         },
         setIsAuthenticated(state, payload) {
             state.isAuthenticated = payload;
+        },
+        setUserRecipes(state, payload) {
+            state.userRecipes = payload;
         }
     },
     actions: {
-        async getRecipes({ state, commit }, payload) {
+        async getRecipes({ state, commit }, plan) {
             try {
                 let response = await axios.get(`${state.apiUrl}`, {
                     params: {
-                        q: payload,
-                        app_id: '17e29e90',
-                        app_key: '1f0b2aebf793a32d9c18eb82a8e7abed',
+                        q: plan,
+                        app_id: '5b6623d5',
+                        app_key: '46674aa2193dbb7b88ffd897331e661a',
                         from: 0,
                         to: 9
                     }
@@ -42,12 +45,11 @@ export default new Vuex.Store({
                 commit('setRecipes', []);
             }
         },
-        userJoin({ commit }, { email, password }) {
+        userLogin({ commit }, { email, password }) {
             firebase
                 .auth()
-                .createUserWithEmailAndPassword(email, password)
+                .signInWithEmailAndPassword(email, password)
                 .then(user => {
-                    // console.log(user);
                     commit('setUser', user);
                     commit('setIsAuthenticated', true);
                     router.push('/about');
@@ -58,10 +60,10 @@ export default new Vuex.Store({
                     router.push('/');
                 });
         },
-        userLogin({ commit }, { email, password }) {
+        userJoin({ commit }, { email, password }) {
             firebase
                 .auth()
-                .signInWithEmailAndPassword(email, password)
+                .createUserWithEmailAndPassword(email, password)
                 .then(user => {
                     commit('setUser', user);
                     commit('setIsAuthenticated', true);
@@ -79,7 +81,7 @@ export default new Vuex.Store({
                 .signOut()
                 .then(() => {
                     commit('setUser', null);
-                    commit('isAuthenticated', false);
+                    commit('setIsAuthenticated', false);
                     router.push('/');
                 })
                 .catch(() => {
@@ -87,12 +89,34 @@ export default new Vuex.Store({
                     commit('setIsAuthenticated', false);
                     router.push('/');
                 });
+        },
+        addRecipe({ state }, payload) {
+            firebase
+                .database()
+                .ref('users')
+                .child(state.user.user.uid)
+                .push({ recipe: payload.recipe.label });
+        },
+        getUserRecipes({ state, commit }) {
+            return firebase
+                .database()
+                .ref('users/' + state.user.user.uid)
+                .once('value', snapshot => {
+                    /* eslint-disable no-console */
+                    console.log('snapshot ', snapshot);
+                    console.log('snapshot value', snapshot.val());
+                    /* eslint-enable no-console */
+                    commit('setUserRecipes', snapshot.val());
+            });
         }
     },
     getters: {
         isAuthenticated(state) {
-            return state.isAuthenticated !== null && state.user !== undefined;
+            return state.user !== null && state.user !== undefined;
+            // console.log(state.user);
+        },
+        currentUser(state) {
+            return state.user;
         }
-    },
-    modules: {}
+    }
 });

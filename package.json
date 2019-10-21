@@ -49,6 +49,7 @@
   "prettier": {
     "singleQuote": true,
     "tabWidth": 4
+    
   },
   "postcss": {
     "plugins": {

@@ -14,7 +14,7 @@
                 delivered daily to your door.
             </div>
             <v-btn fab class="mt-5 brown darken-4">
-                <v-icon large color="white">expand_more</v-icon>
+                <v-icon large color="white">mdi-chevron-down</v-icon>
             </v-btn>
         </v-layout>
     </v-container>

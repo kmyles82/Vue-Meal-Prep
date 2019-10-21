@@ -128,16 +128,14 @@
 </template>
 
 <script>
-
 export default {
     name: 'HomePlans',
-    data(){
-        return {
-        }
+    data() {
+        return {};
     },
     methods: {
         showRecipes(plan) {
-            this.$store.dispatch('getRecipes', plan)
+            this.$store.dispatch('getRecipes', plan);
         }
     }
 };

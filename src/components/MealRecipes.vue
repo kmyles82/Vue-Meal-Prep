@@ -1,20 +1,26 @@
 <template>
     <v-container grid-list-lg>
         <v-layout row wrap>
-            <v-flex xs12 sm6 md6 lg4 v-for="(item, index) in recipes" :key="index">
-                <v-card>
+            <v-flex xs12 sm6 md6 lg4 v-for="(item, idx) in recipes" :key="idx">
+                <v-card data-cy="recipeEntry">
                     <v-responsive>
                         <v-img :src="item.recipe.image"></v-img>
                     </v-responsive>
+
                     <v-card-text>
-                        <div class="title my-3">{{item.recipe.label}}</div>
+                        <div class="title my-5">{{ item.recipe.label }}</div>
+
                         <div class="subheading">Ingredients</div>
                         <ul>
-                            <li v-for="(ingredient,i) in item.recipe.ingredientLines" :key="i">{{ingredient}}</li>
+                            <li
+                                v-for="(ingredient, i) in item.recipe.ingredientLines" :key="i">
+                                {{ ingredient }}
+                            </li>
                         </ul>
                     </v-card-text>
+                    
                     <v-card-actions>
-                        <v-btn dark color="green">Order</v-btn>
+                        <v-btn color="green" dark @click="orderRecipe(item)">Order</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-flex>
@@ -23,11 +29,34 @@
 </template>
 
 <script>
-export default {    
-    name: 'MealRecipes',    
-    computed: {        
-        recipes() {            
-            return this.$store.state.recipes;        
-            }    
-        }};
+export default {
+    name: 'MealRecipes',
+    computed: {
+        recipes() {
+            return this.$store.state.recipes;
+        },
+        isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
+        }
+    },
+    created() {
+        /* eslint-disable no-console */
+        console.log(this.$store.getters.currentUser);
+        /* eslint-enable no-console */
+    },
+    mounted() {
+       
+    },
+    methods: {
+        orderRecipe(item) {
+            if (this.isAuthenticated) {
+                this.$store.dispatch('addRecipe', item);
+            } else {
+                this.$router.push('/sign-in');
+            }
+        }
+    }
+};
 </script>
+
+<style scoped></style>

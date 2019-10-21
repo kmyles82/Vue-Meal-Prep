@@ -28,16 +28,17 @@
                 <v-toolbar-title to="/">{{ appTitle }}</v-toolbar-title>
             </router-link>
 
-            <v-btn color="brown" class="hidden-sm-and-down" to="/menu"
-                >Menu</v-btn
-            >
+            <v-btn color="brown" class="hidden-sm-and-down ml-3" to="/menu">Menu</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
 
             <div class="hidden-sm-and-down" v-if="!isAuthenticated">
-                <v-btn text  to="/signin">SIGN IN</v-btn>
-                <v-btn color="brown lighten-3"  to="/join">JOIN</v-btn>
+                <v-btn text to="/sign-in">SIGN IN</v-btn>
+                <v-btn color="brown lighten-3" to="/join">JOIN</v-btn>
             </div>
-            <v-btn outlined color="white" v-else @click="logout">Logout</v-btn>
+            <div v-else>
+                <v-btn text to="/about">Profile</v-btn>
+                <v-btn outlined color="white" @click="logout" class="ml-3">Logout</v-btn>
+            </div>
         </v-app-bar>
     </span>
 </template>
@@ -55,14 +56,14 @@ export default {
             { title: 'Join' }
         ]
     }),
-    methods:{
-        logout(){
-            this.$store.dispatch('userSignOut')
+    methods: {
+        logout() {
+            this.$store.dispatch('userSignOut');
         }
     },
     computed: {
-        isAuthenticated(){
-            return this.$store.getters.isAuthenticated
+        isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
         }
     }
 };

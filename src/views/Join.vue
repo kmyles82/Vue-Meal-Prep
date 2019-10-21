@@ -8,13 +8,34 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form ref="form" v-model="valid" lazy-validation="">
-                            <v-text-field prepend-icon="person" name="email" label="Email" type="email" v-model="email" :rules="emailRules" required></v-text-field>
-                            <v-text-field prepend-icon="lock" name="password" type="password" label="Password" v-model="password" :rules="passwordRules" required></v-text-field>
+                            <v-text-field
+                                prepend-icon="person"
+                                name="email"
+                                label="Email"
+                                type="email"
+                                v-model="email"
+                                :rules="emailRules"
+                                required
+                            ></v-text-field>
+                            <v-text-field
+                                prepend-icon="lock"
+                                name="password"
+                                type="password"
+                                label="Password"
+                                v-model="password"
+                                :rules="passwordRules"
+                                required
+                            ></v-text-field>
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" :disabled="!valid" @click="submit">Join</v-btn>
+                        <v-btn
+                            color="primary"
+                            :disabled="!valid"
+                            @click="submit"
+                            >Join</v-btn
+                        >
                     </v-card-actions>
                 </v-card>
             </v-flex>
@@ -24,23 +45,31 @@
 <script>
 export default {
     name: 'Join',
-    data(){
-        return{
+    data() {
+        return {
             valid: false,
             email: '',
             password: '',
-            emailRules: [ v => !!v || 'E-mail is required', v => /.+@.+/.test(v) || 'E-mail must be valid' ],
-            passwordRules: [ v => !!v || 'Password is required', v => v.length >= 6 || 'Password must be greater than 6 characters' ]
-        }
+            emailRules: [
+                v => !!v || 'E-mail is required',
+                v => /.+@.+/.test(v) || 'E-mail must be valid'
+            ],
+            passwordRules: [
+                v => !!v || 'Password is required',
+                v =>
+                    v.length >= 6 ||
+                    'Password must be greater than 6 characters'
+            ]
+        };
     },
     methods: {
-        submit(){
-            if(this.$refs.form.validate()){
+        submit() {
+            if (this.$refs.form.validate()) {
                 this.$store.dispatch('userJoin', {
                     email: this.email,
                     password: this.password
-                })
-            } 
+                });
+            }
         }
     }
 };

@@ -5,6 +5,7 @@ import Menu from './views/Menu.vue';
 import Signin from './views/Signin.vue';
 import Join from './views/Join.vue';
 import About from './views/About.vue';
+import store from './store';
 
 Vue.use(Router);
 
@@ -20,7 +21,10 @@ const router = new Router({
         {
             path: '/about',
             name: 'about',
-            component: About
+            component: About,
+            meta: {
+                authRequired: true
+            }
         },
         {
             path: '/menu',
@@ -28,8 +32,8 @@ const router = new Router({
             component: Menu
         },
         {
-            path: '/signin',
-            name: 'signin',
+            path: '/sign-in',
+            name: 'sign-in',
             component: Signin
         },
         {
@@ -38,6 +42,21 @@ const router = new Router({
             component: Join
         }
     ]
+});
+
+//check if route is guarded and user is signed in
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.authRequired)) {
+        if (!store.state.user) {
+            next({
+                path: '/sign-in'
+            });
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 export default router;
